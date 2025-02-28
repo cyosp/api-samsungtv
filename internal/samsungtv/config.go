@@ -16,6 +16,8 @@ const protocolWSS = "wss"
 
 var defaultTVProtocol = protocolWSS
 
+var defaultTVToken = ""
+
 var defaultPortWS = "8001"
 var defaultPortWSS = "8002"
 var defaultTVPort = defaultPortWS
@@ -25,6 +27,7 @@ type tvConfig struct {
 	Mac      *string `yaml:"mac"`
 	Port     *string `yaml:"port"`
 	Protocol *string `yaml:"protocol"`
+	Token    *string `yaml:"token"`
 }
 
 type controllerConfig struct {
@@ -72,7 +75,7 @@ func loadConfig(configFile string) {
 
 	setDefaultValues(config)
 
-	log.InitLog(true)
+	log.InitLog(false)
 
 	configuration = config
 }
@@ -81,6 +84,10 @@ func setDefaultValues(config *samsungTVConfigYAML) {
 	if config.TV.Protocol == nil {
 		config.TV.Protocol = &defaultTVProtocol
 	}
+
+    if config.TV.Token == nil {
+        config.TV.Token = &defaultTVToken
+    }
 
 	if config.TV.Port == nil {
 		switch *config.TV.Protocol {

@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/home-IoT/api-samsungtv/internal/log"
+	"github.com/jmoiron/jsonq"
 
 	"net/http"
 	"net/url"
@@ -49,7 +50,7 @@ func SendKey(key string) error {
 	}
 	jsonStr, jErr := json.Marshal(keyCommand)
 	if jErr == nil {
-		log.Infof("Sent '%s'.", jsonStr)
+		log.Debugf("Sent '%s'.", jsonStr)
 	}
 
 	return nil
@@ -59,10 +60,10 @@ func SendKey(key string) error {
 func connect() (*websocket.Conn, error) {
 	host := fmt.Sprintf("%s:%s", configuration.TV.Host, *configuration.TV.Port)
 	path := "/api/v2/channels/samsung.remote.control"
-	query := fmt.Sprintf("name=%s", base64.StdEncoding.EncodeToString([]byte(configuration.Controller.Name)))
+	query := fmt.Sprintf("name=%s&token=%s", base64.StdEncoding.EncodeToString([]byte(configuration.Controller.Name)), *configuration.TV.Token)
 	u := url.URL{Scheme: *configuration.TV.Protocol, Host: host, Path: path, RawQuery: query}
 
-	log.Infof("Opening connection to %s ...", u.String())
+	log.Debugf("Opening connection to %s ...", u.String())
 
 	websocket.DefaultDialer.TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
 
@@ -72,7 +73,26 @@ func connect() (*websocket.Conn, error) {
 		return nil, err
 	}
 
-	log.Infof("Connection is established.")
+    _, message, err := connection.ReadMessage()
+    if err != nil {
+        log.Errorf("Fail to read message", err)
+        return nil, err
+    }
+    log.Debugf("Message received: %s", message)
+
+    data := map[string]interface{}{}
+    json.NewDecoder(strings.NewReader(string(message[:]))).Decode(&data)
+    token, err := jsonq.NewQuery(data).String("data", "token")
+     if err != nil  {
+         if ! strings.Contains(err.Error(), "does not contain field") {
+            log.Errorf("Fail to get token", err)
+            return nil, err
+         }
+    } else {
+        log.Infof("Token to add in configuration file: %s", token)
+    }
+
+	log.Debugf("Connection is established.")
 
 	return connection, nil
 }
@@ -81,7 +101,7 @@ func connect() (*websocket.Conn, error) {
 func closeConnection(connection *websocket.Conn) {
 	defer connection.Close()
 
-	log.Infof("Closing the connection...")
+	log.Debugf("Closing the connection...")
 
 	err := connection.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""))
 	if err != nil {
@@ -91,7 +111,7 @@ func closeConnection(connection *websocket.Conn) {
 	time.Sleep(time.Second / 2)
 
 	connection = nil
-	log.Infof("Connection closed.")
+	log.Debugf("Connection closed.")
 }
 
 func getStatus() (string, error) {

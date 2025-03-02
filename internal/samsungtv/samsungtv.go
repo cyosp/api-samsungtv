@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"os/exec"
 	"strings"
 	"time"
 
@@ -33,8 +34,24 @@ func CheckConnection() (bool, string) {
 	return (err == nil), text
 }
 
+func isTvAlive() bool {
+    cmd := exec.Command("ping -c 1 -W 1 " + configuration.TV.Host)
+    if err := cmd.Run(); err != nil {
+    	return false
+    }
+    return true
+}
+
 // SendKey sends a key to the TV
 func SendKey(key string) error {
+    if key == "POWER" && !isTvAlive() {
+        var err = wakeOnLan(*configuration.TV.Mac)
+        if err != nil {
+            log.Errorf("Wake on LAN has failed", err)
+            return err
+        }
+    }
+
 	conn, err := connect()
 	if err != nil {
 		log.Debugf("Error establishing a connection.")

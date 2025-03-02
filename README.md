@@ -20,7 +20,16 @@ A list of KEYs that I tested with my TV:
 * SOURCE
 
 ### Configuration
-The [`configs/config-template.yml`](configs/config-template.yml) offers a template for the service configuration. 
+The [`configs/config-template.yml`](configs/config-template.yml) offers a template for the service configuration.
+
+### Create a token
+Run a key call:
+```
+curl -X POST 127.0.0.1:8080/key/VOLUP
+```
+Use the original Samsung TV remote to allow the created token to be validated.</br>
+Token is then displayed on standard output and must be stored in configuration file.</br>
+Then restart api-samsungtv.
 
 ### Build 
 

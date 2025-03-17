@@ -10,13 +10,14 @@ import (
 
 	"github.com/go-openapi/runtime"
 
-	models "github.com/home-IoT/api-samsungtv/gen/models"
+	"github.com/home-IoT/api-samsungtv/gen/models"
 )
 
 // GetStatusOKCode is the HTTP code returned for type GetStatusOK
 const GetStatusOKCode int = 200
 
-/*GetStatusOK Success
+/*
+GetStatusOK Success
 
 swagger:response getStatusOK
 */
@@ -57,7 +58,8 @@ func (o *GetStatusOK) WriteResponse(rw http.ResponseWriter, producer runtime.Pro
 	}
 }
 
-/*GetStatusDefault Error
+/*
+GetStatusDefault Error
 
 swagger:response getStatusDefault
 */

@@ -8,7 +8,7 @@ package operations
 import (
 	"net/http"
 
-	middleware "github.com/go-openapi/runtime/middleware"
+	"github.com/go-openapi/runtime/middleware"
 )
 
 // GetStatusHandlerFunc turns a function with the right signature into a get status handler
@@ -29,10 +29,10 @@ func NewGetStatus(ctx *middleware.Context, handler GetStatusHandler) *GetStatus 
 	return &GetStatus{Context: ctx, Handler: handler}
 }
 
-/*GetStatus swagger:route GET /status getStatus
+/*
+	GetStatus swagger:route GET /status getStatus
 
 Checks the configuration and gets the status of the TV
-
 */
 type GetStatus struct {
 	Context *middleware.Context
@@ -42,17 +42,15 @@ type GetStatus struct {
 func (o *GetStatus) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	route, rCtx, _ := o.Context.RouteInfo(r)
 	if rCtx != nil {
-		r = rCtx
+		*r = *rCtx
 	}
 	var Params = NewGetStatusParams()
-
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
 	res := o.Handler.Handle(Params) // actually handle the request
-
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }

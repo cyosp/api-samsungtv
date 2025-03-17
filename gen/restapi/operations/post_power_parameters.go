@@ -10,12 +10,12 @@ import (
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime/middleware"
-
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 )
 
 // NewPostPowerParams creates a new PostPowerParams object
-// no default values defined in spec.
+//
+// There are no default values defined in the spec.
 func NewPostPowerParams() PostPowerParams {
 
 	return PostPowerParams{}
@@ -50,7 +50,6 @@ func (o *PostPowerParams) BindRequest(r *http.Request, route *middleware.Matched
 	if err := o.bindState(rState, rhkState, route.Formats); err != nil {
 		res = append(res, err)
 	}
-
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
@@ -66,7 +65,6 @@ func (o *PostPowerParams) bindState(rawData []string, hasKey bool, formats strfm
 
 	// Required: true
 	// Parameter is provided by construction from the route
-
 	o.State = raw
 
 	return nil

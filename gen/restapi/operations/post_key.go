@@ -8,7 +8,7 @@ package operations
 import (
 	"net/http"
 
-	middleware "github.com/go-openapi/runtime/middleware"
+	"github.com/go-openapi/runtime/middleware"
 )
 
 // PostKeyHandlerFunc turns a function with the right signature into a post key handler
@@ -29,10 +29,10 @@ func NewPostKey(ctx *middleware.Context, handler PostKeyHandler) *PostKey {
 	return &PostKey{Context: ctx, Handler: handler}
 }
 
-/*PostKey swagger:route POST /key/{key} postKey
+/*
+	PostKey swagger:route POST /key/{key} postKey
 
 Sends a remote control key to the TV
-
 */
 type PostKey struct {
 	Context *middleware.Context
@@ -42,17 +42,15 @@ type PostKey struct {
 func (o *PostKey) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	route, rCtx, _ := o.Context.RouteInfo(r)
 	if rCtx != nil {
-		r = rCtx
+		*r = *rCtx
 	}
 	var Params = NewPostKeyParams()
-
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
 	res := o.Handler.Handle(Params) // actually handle the request
-
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }

@@ -29,6 +29,7 @@ func init() {
   ],
   "swagger": "2.0",
   "info": {
+    "description": "A simple REST API to modern Samsung TVs based on a Websocket connection",
     "title": "SamsungTV-API",
     "version": "1.0.0"
   },
@@ -52,6 +53,7 @@ func init() {
       "parameters": [
         {
           "type": "string",
+          "description": "The remote control key to be sent to the TV",
           "name": "key",
           "in": "path",
           "required": true
@@ -144,6 +146,7 @@ func init() {
   ],
   "swagger": "2.0",
   "info": {
+    "description": "A simple REST API to modern Samsung TVs based on a Websocket connection",
     "title": "SamsungTV-API",
     "version": "1.0.0"
   },
@@ -167,6 +170,7 @@ func init() {
       "parameters": [
         {
           "type": "string",
+          "description": "The remote control key to be sent to the TV",
           "name": "key",
           "in": "path",
           "required": true

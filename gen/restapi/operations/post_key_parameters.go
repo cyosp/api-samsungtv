@@ -10,12 +10,12 @@ import (
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime/middleware"
-
-	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/strfmt"
 )
 
 // NewPostKeyParams creates a new PostKeyParams object
-// no default values defined in spec.
+//
+// There are no default values defined in the spec.
 func NewPostKeyParams() PostKeyParams {
 
 	return PostKeyParams{}
@@ -30,7 +30,7 @@ type PostKeyParams struct {
 	// HTTP Request Object
 	HTTPRequest *http.Request `json:"-"`
 
-	/*
+	/*The remote control key to be sent to the TV
 	  Required: true
 	  In: path
 	*/
@@ -50,7 +50,6 @@ func (o *PostKeyParams) BindRequest(r *http.Request, route *middleware.MatchedRo
 	if err := o.bindKey(rKey, rhkKey, route.Formats); err != nil {
 		res = append(res, err)
 	}
-
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
@@ -66,7 +65,6 @@ func (o *PostKeyParams) bindKey(rawData []string, hasKey bool, formats strfmt.Re
 
 	// Required: true
 	// Parameter is provided by construction from the route
-
 	o.Key = raw
 
 	return nil

@@ -10,13 +10,14 @@ import (
 
 	"github.com/go-openapi/runtime"
 
-	models "github.com/home-IoT/api-samsungtv/gen/models"
+	"github.com/home-IoT/api-samsungtv/gen/models"
 )
 
 // PostPowerAcceptedCode is the HTTP code returned for type PostPowerAccepted
 const PostPowerAcceptedCode int = 202
 
-/*PostPowerAccepted Accepted
+/*
+PostPowerAccepted Accepted
 
 swagger:response postPowerAccepted
 */
@@ -37,7 +38,8 @@ func (o *PostPowerAccepted) WriteResponse(rw http.ResponseWriter, producer runti
 	rw.WriteHeader(202)
 }
 
-/*PostPowerDefault Error
+/*
+PostPowerDefault Error
 
 swagger:response postPowerDefault
 */

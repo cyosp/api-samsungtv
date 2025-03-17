@@ -8,7 +8,7 @@ package operations
 import (
 	"net/http"
 
-	middleware "github.com/go-openapi/runtime/middleware"
+	"github.com/go-openapi/runtime/middleware"
 )
 
 // PostPowerHandlerFunc turns a function with the right signature into a post power handler
@@ -29,10 +29,10 @@ func NewPostPower(ctx *middleware.Context, handler PostPowerHandler) *PostPower 
 	return &PostPower{Context: ctx, Handler: handler}
 }
 
-/*PostPower swagger:route POST /power/{state} postPower
+/*
+	PostPower swagger:route POST /power/{state} postPower
 
 Turns the TV on or off
-
 */
 type PostPower struct {
 	Context *middleware.Context
@@ -42,17 +42,15 @@ type PostPower struct {
 func (o *PostPower) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	route, rCtx, _ := o.Context.RouteInfo(r)
 	if rCtx != nil {
-		r = rCtx
+		*r = *rCtx
 	}
 	var Params = NewPostPowerParams()
-
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
 		o.Context.Respond(rw, r, route.Produces, route, err)
 		return
 	}
 
 	res := o.Handler.Handle(Params) // actually handle the request
-
 	o.Context.Respond(rw, r, route.Produces, route, res)
 
 }

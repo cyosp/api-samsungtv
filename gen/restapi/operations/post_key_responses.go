@@ -10,13 +10,14 @@ import (
 
 	"github.com/go-openapi/runtime"
 
-	models "github.com/home-IoT/api-samsungtv/gen/models"
+	"github.com/home-IoT/api-samsungtv/gen/models"
 )
 
 // PostKeyAcceptedCode is the HTTP code returned for type PostKeyAccepted
 const PostKeyAcceptedCode int = 202
 
-/*PostKeyAccepted Accepted
+/*
+PostKeyAccepted Accepted
 
 swagger:response postKeyAccepted
 */
@@ -37,7 +38,8 @@ func (o *PostKeyAccepted) WriteResponse(rw http.ResponseWriter, producer runtime
 	rw.WriteHeader(202)
 }
 
-/*PostKeyDefault Error
+/*
+PostKeyDefault Error
 
 swagger:response postKeyDefault
 */

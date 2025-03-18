@@ -301,9 +301,6 @@ func (o *SamsungtvAPI) Serve(builder middleware.Builder) http.Handler {
 	if o.Middleware != nil {
 		return o.Middleware(builder)
 	}
-	if o.useSwaggerUI {
-		return o.context.APIHandlerSwaggerUI(builder)
-	}
 	return o.context.APIHandler(builder)
 }
 

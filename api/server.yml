@@ -22,7 +22,7 @@ paths:
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"          
+            $ref: "#/definitions/ErrorResponse"
   /power/{state}:
     parameters:
       - name: state
@@ -57,6 +57,23 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
+  /app/{app}:
+    parameters:
+      - name: app
+        type: string
+        in: path
+        required: true
+        description: The app to run on the TV
+    post:
+      description: Run an app on the TV
+      operationId: postApp
+      responses:
+        202:
+          description: Accepted
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
 definitions:
   StatusResponse:
     type: object
@@ -75,4 +92,3 @@ definitions:
         description: the status response from the TV
   ErrorResponse:
     type: string
-    

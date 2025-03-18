@@ -1,3 +1,14 @@
+# Update swagger generated code
+```
+podman build -t api-samsungtv-swagger-update -f - . <<EOF
+FROM ghcr.io/go-swagger/go-swagger
+RUN apk add make
+ENTRYPOINT make swagger-gen
+EOF
+
+podman run --rm -it --user $(id -u):$(id -g) -v $PWD:/working-directory -w /working-directory localhost/api-samsungtv-swagger-update
+```
+
 # Build
 ```
 podman build --tag localhost/samsung:latest .

@@ -45,6 +45,9 @@ func NewSamsungtvAPI(spec *loads.Document) *SamsungtvAPI {
 		GetStatusHandler: GetStatusHandlerFunc(func(params GetStatusParams) middleware.Responder {
 			return middleware.NotImplemented("operation GetStatus has not yet been implemented")
 		}),
+		PostAppHandler: PostAppHandlerFunc(func(params PostAppParams) middleware.Responder {
+			return middleware.NotImplemented("operation PostApp has not yet been implemented")
+		}),
 		PostKeyHandler: PostKeyHandlerFunc(func(params PostKeyParams) middleware.Responder {
 			return middleware.NotImplemented("operation PostKey has not yet been implemented")
 		}),
@@ -89,6 +92,8 @@ type SamsungtvAPI struct {
 
 	// GetStatusHandler sets the operation handler for the get status operation
 	GetStatusHandler GetStatusHandler
+	// PostAppHandler sets the operation handler for the post app operation
+	PostAppHandler PostAppHandler
 	// PostKeyHandler sets the operation handler for the post key operation
 	PostKeyHandler PostKeyHandler
 	// PostPowerHandler sets the operation handler for the post power operation
@@ -172,6 +177,9 @@ func (o *SamsungtvAPI) Validate() error {
 
 	if o.GetStatusHandler == nil {
 		unregistered = append(unregistered, "GetStatusHandler")
+	}
+	if o.PostAppHandler == nil {
+		unregistered = append(unregistered, "PostAppHandler")
 	}
 	if o.PostKeyHandler == nil {
 		unregistered = append(unregistered, "PostKeyHandler")
@@ -274,6 +282,10 @@ func (o *SamsungtvAPI) initHandlerCache() {
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
+	o.handlers["POST"]["/app/{app}"] = NewPostApp(o.context, o.PostAppHandler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
 	o.handlers["POST"]["/key/{key}"] = NewPostKey(o.context, o.PostKeyHandler)
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
@@ -289,9 +301,9 @@ func (o *SamsungtvAPI) Serve(builder middleware.Builder) http.Handler {
 	if o.Middleware != nil {
 		return o.Middleware(builder)
 	}
-	/*if o.useSwaggerUI {
+	if o.useSwaggerUI {
 		return o.context.APIHandlerSwaggerUI(builder)
-	}*/
+	}
 	return o.context.APIHandler(builder)
 }
 

@@ -34,6 +34,32 @@ func init() {
     "version": "1.0.0"
   },
   "paths": {
+    "/app/{app}": {
+      "post": {
+        "description": "Run an app on the TV",
+        "operationId": "postApp",
+        "responses": {
+          "202": {
+            "description": "Accepted"
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "type": "string",
+          "description": "The app to run on the TV",
+          "name": "app",
+          "in": "path",
+          "required": true
+        }
+      ]
+    },
     "/key/{key}": {
       "post": {
         "description": "Sends a remote control key to the TV",
@@ -151,6 +177,32 @@ func init() {
     "version": "1.0.0"
   },
   "paths": {
+    "/app/{app}": {
+      "post": {
+        "description": "Run an app on the TV",
+        "operationId": "postApp",
+        "responses": {
+          "202": {
+            "description": "Accepted"
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "type": "string",
+          "description": "The app to run on the TV",
+          "name": "app",
+          "in": "path",
+          "required": true
+        }
+      ]
+    },
     "/key/{key}": {
       "post": {
         "description": "Sends a remote control key to the TV",

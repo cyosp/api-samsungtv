@@ -38,6 +38,7 @@ func configureAPI(api *operations.SamsungtvAPI) http.Handler {
 
 	api.GetStatusHandler = operations.GetStatusHandlerFunc(samsungtv.GetStatus)
 	api.PostKeyHandler = operations.PostKeyHandlerFunc(samsungtv.PostKey)
+	api.PostAppHandler = operations.PostAppHandlerFunc(samsungtv.PostApp)
 	api.PostPowerHandler = operations.PostPowerHandlerFunc(samsungtv.PostPower)
 
 	if api.GetStatusHandler == nil {

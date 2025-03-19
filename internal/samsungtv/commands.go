@@ -22,6 +22,18 @@ func PostKey(param ops.PostKeyParams) middleware.Responder {
 	return ops.NewPostKeyAccepted()
 }
 
+// PostApp run an app on the TV
+func PostApp(param ops.PostAppParams) middleware.Responder {
+
+	err := RunApp(param.App)
+	if err != nil {
+		errorObj := models.ErrorResponse(err.Error())
+		return ops.NewPostAppDefault(502).WithPayload(errorObj)
+	}
+
+	return ops.NewPostAppAccepted()
+}
+
 const keyPowerOff = "KEY_POWER"
 
 // PostPower turns the TV on or off

@@ -11,6 +11,7 @@ See the [API documentation](https://home-iot.github.io/api-samsungtv/) on GitHub
 * `/status`: to the get connection status
 * `/power/<on|off>`: turns the TV on or off
 * `/key/POWER`: to turn the TV on or off; this is translated to a `KEY_POWER` key event
+* `/app/3201907018807`: to run app 3201907018807 on TV
 
 A list of KEYs that I tested with my TV: 
 

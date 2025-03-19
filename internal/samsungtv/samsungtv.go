@@ -1,6 +1,7 @@
 package samsungtv
 
 import (
+	"bytes"
 	"crypto/tls"
 	"encoding/base64"
 	"encoding/json"
@@ -19,6 +20,7 @@ import (
 
 const keyPrefix = "KEY_"
 const statusURL = "http://%s:8001/api/v2/"
+const appURL = "http://%s:8001/api/v2/applications/%s"
 
 // CheckConnection checks if a connection to the TV is possible
 func CheckConnection() (bool, string) {
@@ -53,6 +55,25 @@ func SendKey(key string) error {
 	}
 
 	return nil
+}
+
+// RunApp run app on the TV
+func RunApp(app string) error {
+	resp, err := http.Post(fmt.Sprintf(appURL, configuration.TV.Host, app), "application/json", new(bytes.Buffer))
+	if err != nil {
+		return err
+	}
+
+	defer resp.Body.Close()
+
+	var text []byte
+	text, err = ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return err
+	} else {
+		log.Debugf(string(text))
+		return nil
+	}
 }
 
 // connect opens a Websocket connection to the TV

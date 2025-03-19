@@ -1,6 +1,7 @@
 package samsungtv
 
 import (
+	"bytes"
 	"crypto/tls"
 	"encoding/base64"
 	"encoding/json"
@@ -21,6 +22,7 @@ import (
 
 const keyPrefix = "KEY_"
 const statusURL = "http://%s:8001/api/v2/"
+const appURL = "http://%s:8001/api/v2/applications/%s"
 
 // CheckConnection checks if a connection to the TV is possible
 func CheckConnection() (bool, string) {
@@ -35,22 +37,22 @@ func CheckConnection() (bool, string) {
 }
 
 func isTvAlive() bool {
-    cmd := exec.Command("ping -c 1 -W 1 " + configuration.TV.Host)
-    if err := cmd.Run(); err != nil {
-    	return false
-    }
-    return true
+	cmd := exec.Command("ping -c 1 -W 1 " + configuration.TV.Host)
+	if err := cmd.Run(); err != nil {
+		return false
+	}
+	return true
 }
 
 // SendKey sends a key to the TV
 func SendKey(key string) error {
-    if key == "POWER" && !isTvAlive() {
-        var err = wakeOnLan(*configuration.TV.Mac)
-        if err != nil {
-            log.Errorf("Wake on LAN has failed", err)
-            return err
-        }
-    }
+	if key == "POWER" && !isTvAlive() {
+		var err = wakeOnLan(*configuration.TV.Mac)
+		if err != nil {
+			log.Errorf("Wake on LAN has failed", err)
+			return err
+		}
+	}
 
 	conn, err := connect()
 	if err != nil {
@@ -73,6 +75,25 @@ func SendKey(key string) error {
 	return nil
 }
 
+// RunApp run app on the TV
+func RunApp(app string) error {
+	resp, err := http.Post(fmt.Sprintf(appURL, configuration.TV.Host, app), "application/json", new(bytes.Buffer))
+	if err != nil {
+		return err
+	}
+
+	defer resp.Body.Close()
+
+	var text []byte
+	text, err = ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return err
+	} else {
+		log.Debugf(string(text))
+		return nil
+	}
+}
+
 // connect opens a Websocket connection to the TV
 func connect() (*websocket.Conn, error) {
 	host := fmt.Sprintf("%s:%s", configuration.TV.Host, *configuration.TV.Port)
@@ -90,24 +111,24 @@ func connect() (*websocket.Conn, error) {
 		return nil, err
 	}
 
-    _, message, err := connection.ReadMessage()
-    if err != nil {
-        log.Errorf("Fail to read message", err)
-        return nil, err
-    }
-    log.Debugf("Message received: %s", message)
+	_, message, err := connection.ReadMessage()
+	if err != nil {
+		log.Errorf("Fail to read message", err)
+		return nil, err
+	}
+	log.Debugf("Message received: %s", message)
 
-    data := map[string]interface{}{}
-    json.NewDecoder(strings.NewReader(string(message[:]))).Decode(&data)
-    token, err := jsonq.NewQuery(data).String("data", "token")
-     if err != nil  {
-         if ! strings.Contains(err.Error(), "does not contain field") {
-            log.Errorf("Fail to get token", err)
-            return nil, err
-         }
-    } else {
-        log.Infof("Token to add in configuration file: %s", token)
-    }
+	data := map[string]interface{}{}
+	json.NewDecoder(strings.NewReader(string(message[:]))).Decode(&data)
+	token, err := jsonq.NewQuery(data).String("data", "token")
+	if err != nil {
+		if !strings.Contains(err.Error(), "does not contain field") {
+			log.Errorf("Fail to get token", err)
+			return nil, err
+		}
+	} else {
+		log.Infof("Token to add in configuration file: %s", token)
+	}
 
 	log.Debugf("Connection is established.")
 

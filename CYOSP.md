@@ -24,5 +24,6 @@ podman run --rm -p 8080:8080 localhost/samsung:latest
 wget 127.0.0.1:8080/status
 curl -X POST 127.0.0.1:8080/power/on
 curl -X POST 127.0.0.1:8080/key/VOLUP
+curl -X POST 127.0.0.1:8080/app/3201907018807
 curl -X POST 127.0.0.1:8080/power/off
 ```

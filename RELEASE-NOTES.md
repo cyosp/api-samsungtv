@@ -1,5 +1,8 @@
 Release notes
 -------------
+##### 1.0.0.4 (2026-10-28)
+ * Debian Trixie build for architectures: x86_64 and aarch64
+
 ##### 1.0.0.3 (2025-03-20)
  * Add run app endpoint
 

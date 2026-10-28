@@ -7,26 +7,24 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     name: Build on ${{ matrix.base_image }}
     strategy:
       matrix:
         include:
           - arch: none
             distro: none
-            base_image: debian:bookworm
-          - arch: armv7
-            distro: bookworm
+            base_image: debian:trixie
           - arch: aarch64
-            distro: bookworm
+            distro: trixie
     steps:
-      - uses: actions/checkout@v4.2.2
+      - uses: actions/checkout@v7.0.1
 
       - name: Get tag name
         id: tag
         run: echo "NAME=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_OUTPUT
 
-      - uses: uraimo/run-on-arch-action@v3.0.0
+      - uses: uraimo/run-on-arch-action@v3.2.1
         name: Build binary for ${{ matrix.distro }} - ${{ matrix.arch }} - ${{ matrix.base_image }}
         id: build
         with:
@@ -48,18 +46,18 @@ jobs:
             dist=$(cat /etc/os-release | grep VERSION_CODENAME | cut -d= -f2)
             mv api-samsungtv api-samsungtv-$dist-$(arch)
 
-      - uses: actions/upload-artifact@v4.6.1
+      - uses: actions/upload-artifact@v7.0.2
         with:
           name: ${{ matrix.arch }}
           path: api-samsungtv-*
           if-no-files-found: error
 
   publish-release:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     name: Publish release
     needs: build
     steps:
-      - uses: actions/checkout@v4.2.2
+      - uses: actions/checkout@v7.0.1
 
       - name: Get tag name
         id: tag
@@ -90,34 +88,24 @@ jobs:
           release_name: ${{ steps.tag.outputs.NAME }}
           draft: true
 
-      - name: Upload api-samsungtv Bookworm x86_64 to release
+      - name: Upload api-samsungtv Trixie x86_64 to release
         uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.release.outputs.upload_url }}
-          asset_path: api-samsungtv-bookworm-x86_64
-          asset_name: api-samsungtv-bookworm-x86_64
+          asset_path: api-samsungtv-trixie-x86_64
+          asset_name: api-samsungtv-trixie-x86_64
           asset_content_type: application/octet-stream
 
-      - name: Upload api-samsungtv Bookworm armv7l to release
+      - name: Upload api-samsungtv Trixie aarch64 to release
         uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.release.outputs.upload_url }}
-          asset_path: api-samsungtv-bookworm-armv7l
-          asset_name: api-samsungtv-bookworm-armv7l
-          asset_content_type: application/octet-stream
-
-      - name: Upload api-samsungtv Bookworm aarch64 to release
-        uses: actions/upload-release-asset@v1.0.2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.release.outputs.upload_url }}
-          asset_path: api-samsungtv-bookworm-aarch64
-          asset_name: api-samsungtv-bookworm-aarch64
+          asset_path: api-samsungtv-trixie-aarch64
+          asset_name: api-samsungtv-trixie-aarch64
           asset_content_type: application/octet-stream
 
       - name: Upload check sum file to release
@@ -131,7 +119,7 @@ jobs:
           asset_content_type: text/plain
 
       - name: Publish release with notes
-        uses: cyosp/publish-release-with-notes@2.0.1
+        uses: cyosp/publish-release-with-notes@2.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
